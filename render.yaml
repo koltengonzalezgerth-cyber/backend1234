@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: pulse-api
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pulse-db
+          property: connectionString
+      - key: REDDIT_CLIENT_ID
+        sync: false
+      - key: REDDIT_CLIENT_SECRET
+        sync: false
+      - key: REDDIT_USER_AGENT
+        value: pulse-app/0.1
+      - key: NEWSAPI_KEY
+        sync: false
+      - key: FINNHUB_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: INGEST_INTERVAL_MINUTES
+        value: "15"
+
+databases:
+  - name: pulse-db
+    plan: free
+    databaseName: pulse
+    user: pulse
